@@ -1,0 +1,168 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Language Translator</title>
+    <!-- Font Awesome -->
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.18.0/css/mdb.min.css" rel="stylesheet">
+<style>
+
+.design{
+    margin-top:20px;
+    /*background-color:#A4D466;*/
+
+    background: linear-gradient(145deg, aqua , #387FFC , pink , #f4976c) fixed;
+
+}
+.jumbotron{
+    width:50%;
+    background-color:#1F2124;
+
+}
+
+h2{
+    font-family:"Roboto";
+    color:white;
+}
+
+.card{
+    margin-top:40px;
+    margin-left:25%;
+    align-content: center;
+    width:50%;
+    background-color:#29335C;
+    height: 100%;
+}
+
+#text_input{
+    margin-top:30px;
+     background-color:#E3AD3D;
+
+}
+
+#text_output{
+    background-color:#E3AD3D;
+
+}
+
+
+p{
+    font-family:Roboto;
+    color:black;
+    font-size:20px;
+}
+</style>
+</head>
+
+<body class ="design ">
+
+    <div class = "container jumbotron p-2 text-center  ">
+        <h2><b>English to Tulu Language Translator</b></h2>
+    </div>
+<div class = "card">
+    <div class="container jumbotron p-4 text-center " id="text_input">
+        <input type="text" class="form-control" placeholder="Enter English text here" id="lan" onkeyup="validate()">
+        <span id="input-error-msg" style="display: none;color: red;"></span>
+
+      <!--  <a href="/" style="display: none;" id="reload">Try again <i class="fas fa-sync-alt"></i></a> -->
+        <button class="btn btn-primary" id="process" style="display: none">Process</button>
+
+    </div>
+
+    <div class = "container jumbotron p-4 text-center" id="text_output">
+        <div class="loader" style="display: none">
+            <div class="spinner-grow text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-secondary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-success" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-danger" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-warning" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-info" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-light" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="spinner-grow text-dark" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div class = "container">
+            <p style="display: none;" id="result"></p>
+        </div>
+    </div>
+</div>
+
+   <!-- JQuery -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.18.0/js/mdb.min.js"></script>
+<script>
+
+    function validate(){
+        let lan = $('#lan').val()
+        let pattern = RegExp(/^[\s]+$/)
+        if (lan === "" || pattern.test(lan)){
+            $('#input-error-msg').html("<i class='fas fa-exclamation-circle'></i>Please enter a valid text");
+            $('#input-error-msg').show()
+            $('#process').hide()
+        }else{
+            $('#input-error-msg').hide()
+            $('#process').show()
+        }
+    }
+    $(document).ready(function(){
+        $('#process').click(function(e){
+            let lan = $('#lan').val()
+            e.preventDefault()
+            $('#process').hide()
+            $('.loader').show()
+
+            $.ajax({
+                type: 'POST',
+                url: "/",
+                data: {
+                    lan: lan,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response){
+
+                    setTimeout(function () {
+                        $('.loader').hide()
+                        $('#result').html(response)
+                        $('#result').show()
+                        $('#reload').show()
+                    }, 2000)
+
+                },
+                error: function(response){
+                    alert("Error while processing ")
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>
